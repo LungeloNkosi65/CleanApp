@@ -1,0 +1,107 @@
+﻿@model CleanApp2018.ViewModels.CalculatorVM
+
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<div class="greenBackground">
+
+    @{
+        ViewBag.Title = "Index";
+    }
+    <br />
+    <br />
+    <br />
+
+    <h2>Calculator</h2>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Points Calculator</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.wCategoryId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+
+                @if (ViewBag.CategoryList != null)
+            {
+                @Html.DropDownListFor(model => model.wCategoryId, ViewBag.CategoryList as SelectList, "--Select Category--", new { @class = "form-control" })
+        }
+            </div>
+            @Html.ValidationMessageFor(model => model.wCategoryId, "", new { @class = "text-danger" })
+
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.wItemId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+
+                @Html.DropDownListFor(model => model.wItemId, new SelectList(""), "--Select Item--", new { @class = "form-control" })
+            </div>
+            @Html.ValidationMessageFor(model => model.wItemId, "", new { @class = "text-danger" })
+
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ValueEntered, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ValueEntered, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ValueEntered, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ConvCat, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+
+                @Html.RadioButtonFor(model => model.ConvCat, "Weight", new { htmlAttributes = new { @class = "form-control" } })      Weight(kg)
+                <br />
+
+
+                @Html.RadioButtonFor(model => model.ConvCat, "Points", new { htmlAttributes = new { @class = "form-control" } })  Points
+                <br />
+                @Html.RadioButtonFor(model => model.ConvCat, "Rands", new { htmlAttributes = new { @class = "form-control" } })    Rands
+                <br />
+                @Html.ValidationMessageFor(model => model.ConvCat, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Calculate" class="btn btn-default" />
+            </div>
+        </div>
+        <div>
+            <p>Your Result is:</p>
+            <p>Selected Category : @Html.DisplayFor(x => x.name)</p>
+            <p>Waste Name : @Html.DisplayFor(x => x.name2)</p>
+            <p> Weight :@Html.DisplayFor(x => x.AnswerW)</p>
+            <p> Points :@Html.DisplayFor(x => x.AnswerP)</p>
+            <p>Rands :@Html.DisplayFor(x => x.AnswerR)</p>
+
+        </div>
+    </div>
+    }
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#wCategoryId").change(function () {
+                $.get("/Calculator/GetItemList", { wCategoryId: $("#wCategoryId").val() }, function (data) {
+                    $("#wItemId").empty();
+                    $.each(data, function (index, row) {
+                        $("#wItemId").append("<option value='" + row.wItemId + "'> " + row.Iname + "</option>")
+                    });
+
+                });
+            })
+        });
+    </script>
+</div>
+
+
+
+
